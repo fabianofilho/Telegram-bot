@@ -17,7 +17,11 @@ app.all('/rest', function (req, res) {
 
 app.all('/test', function (req, res) {
 	console.log(req.body);
-	data = [{key:"text=",value:"Fala "+req.body.message.from.first_name+" Beleza?"},{key:"chat_id=",value:req.body.message.chat.id}]
+	if(req.body.message.text == "beleza" || req.body.message.text == "Beleza"){
+		data = [{key:"text=",value:"Então é nois mano"},{key:"chat_id=",value:req.body.message.chat.id}]
+	}
+	else
+		data = [{key:"text=",value:"Fala "+req.body.message.from.first_name+" Beleza?"},{key:"chat_id=",value:req.body.message.chat.id}]
 	telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);
 	console.log("ok")
   	res.send('Ok')
