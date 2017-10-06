@@ -67,6 +67,7 @@ app.all('/rest', function (req, res) {
   						telegramAPI.uploadImage(data_file,function(result){
   							//console.log(chat_id)
   							console.log(result)
+  							console.log("IMAGE DATA: "+result.photo)
   						});
   					}
   					else{
@@ -84,10 +85,26 @@ app.all('/rest', function (req, res) {
 
 		if(req.body.message.text == "beleza" || req.body.message.text == "Beleza")
 			data = [{key:"text=",value:messages.blz},{key:"chat_id=",value:req.body.message.chat.id}]
-		else
+
+		else if(req.body.message.text == "/start"){
 			data = [{key:"text=",value:messages.hello.replace("{name}",req.body.message.from.first_name)},{key:"chat_id=",value:req.body.message.chat.id}]
-		
-		telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);
+			telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);
+
+			data_file = [{key:"photo=",value:config.tut_img_id},{key:"chat_id=",value:req.body.message.chat.id}]
+			telegramAPI.consumeAPI(servicesAPI.sendPhoto,data_file,interface.show);
+
+			//data_file = {path_img:config.tut_img_path,chat_id: req.body.message.chat.id}
+			/*telegramAPI.uploadImage(data_file,function(result){
+				//console.log(chat_id)
+				console.log(result)
+				console.log("IMAGE DATA: ")
+				console.log(result.result.photo)
+			});*/
+		}
+		else{
+			data = [{key:"text=",value:messages.default.replace("{name}",req.body.message.from.first_name)},{key:"chat_id=",value:req.body.message.chat.id}]
+			telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);
+		}
 	}
 	
 	console.log("ok")
