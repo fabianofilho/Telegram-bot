@@ -20,12 +20,12 @@ function getImageUrl(imageId){
 }
 
 
-function downloadImage(imageId,path,callback){
+function downloadImage(image_data,path,callback){
 	var https = require("https");
 	Stream = require('stream').Transform,                                  
     fs = require('fs');
 
-	callUrl = getImageUrl(imageId);
+	callUrl = getImageUrl(image_data.file_path);
 	https.request(callUrl, function(response) {                                        
 	 var data = new Stream();                                                    
 
@@ -35,7 +35,7 @@ function downloadImage(imageId,path,callback){
 
 	  response.on('end', function() {                                             
 	    fs.writeFileSync(path, data.read());
-	    callback(path);                               
+	    callback({image_id:image_data.file_id,path:path});                               
 	  });                                                                         
 	}).end();
 }

@@ -45,15 +45,22 @@ app.all('/rest', function (req, res) {
 		//Faz download da imagem
 		data_file = [{key:"file_id=",value:photo.file_id}]
 		telegramAPI.consumeAPI(servicesAPI.getFile,data_file,function(result){
-			telegramAPI.downloadImage(result.data.result.file_path,"./"+result.data.result.file_path, function(path){
-				console.log("BAIXOU A IMAGEM"+path);
+			telegramAPI.downloadImage(result.data.result,config.download_path+result.data.result.file_id+".jpg", function(result){
+				console.log("BAIXOU A IMAGEM"+result.path);
 				
-				/*var cmd = 'ls '+path;
+				var cmd = "cd {caffe_path} ; python {caffe_script}{id_image}.png"
+				cmd = cmd.replace("{caffe_path}",config.caffe_path)
+						.replace("{caffe_script}",
+							config.caffe_script.replace("{path_in}",config.reverse_path+result.path)
+										.replace("{path_out}",config.reverse_path+config.processed_path))
+						.replace("{id_image}",result.image_id)
+
 				exec(cmd, function(error, stdout, stderr) {
   					// command output is in stdout
+  					console.log(stderr)
   					console.log(stdout)
-				});*/
-			});		
+				});
+			});	
 		});
 		
 	} //Chat
