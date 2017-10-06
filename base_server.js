@@ -83,9 +83,10 @@ app.all('/rest', function (req, res) {
 	} //Chat
 	else{
 
-		if(req.body.message.text == "beleza" || req.body.message.text == "Beleza")
+		if(req.body.message.text == "beleza" || req.body.message.text == "Beleza"){
 			data = [{key:"text=",value:messages.blz},{key:"chat_id=",value:req.body.message.chat.id}]
-
+			telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);		
+		}
 		else if(req.body.message.text == "/start"){
 			data = [{key:"text=",value:messages.hello.replace("{name}",req.body.message.from.first_name)},{key:"chat_id=",value:req.body.message.chat.id}]
 			telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);
