@@ -48,11 +48,11 @@ app.all('/rest', function (req, res) {
 			telegramAPI.downloadImage(result.data.result.file_path,"./"+result.data.result.file_path, function(path){
 				console.log("BAIXOU A IMAGEM"+path);
 				
-				var cmd = 'ls '+path;
+				/*var cmd = 'ls '+path;
 				exec(cmd, function(error, stdout, stderr) {
   					// command output is in stdout
   					console.log(stdout)
-				});
+				});*/
 			});		
 		});
 		
