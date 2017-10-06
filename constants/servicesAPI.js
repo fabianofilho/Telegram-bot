@@ -5,6 +5,7 @@ module.exports  = {
 	chat: "Chat",
 	sendMessage: "sendMessage",
 	getFile:"getFile",
-	setWebhook: "setWebhook"
+	setWebhook: "setWebhook",
+	sendPhoto: "sendPhoto"
 }
 

@@ -85,6 +85,30 @@ function consumeAPI(service,r_data,callback){
 	});
 }
 
-module.exports = {consumeAPI: consumeAPI, downloadImage: downloadImage}
+
+/*
+upload Image
+*/
+function uploadImage(data,callback){
+	
+	console.log("UPANDO IMAGEM: "+data.path_img)
+	//var request = require('request');
+	//var FormData = require('form-data');
+	var baseUrl = getBaseUrl("sendPhoto")
+	var request = require('superagent');
+	var agent1 = request.agent();
+	agent1.post(baseUrl)
+      .attach('photo',data.path_img)
+      .attach('chat_id',data.chat_id)
+      .end(function(err, res) {
+          if (err) {
+              console.log("ERRO:" +err)
+           }
+           //console.log(res.body)
+           callback(res.body)
+       });
+}
+
+module.exports = {consumeAPI: consumeAPI, downloadImage: downloadImage, uploadImage:uploadImage}
 
 //consumeAPI(services.getMe,function(a){console.log(a)});

@@ -4,6 +4,7 @@ var exec = require('child_process').exec;
 
 var telegramAPI = require("./libs/telegramAPI.js");
 var interface = require("./libs/interface.js"); 
+var responseControl = require("./libs/responseControl.js"); 
 const servicesAPI = require("./constants/servicesAPI.js");
 const messages = require("./constants/messages.js");
 const config = require("./constants/config.js");
@@ -11,7 +12,6 @@ const config = require("./constants/config.js");
 
 const app = express()
 app.use( bodyParser.json() );
-
 
 
 app.all('/test', function (req, res) {
@@ -32,14 +32,18 @@ app.all('/rest', function (req, res) {
 	
 	//Verifica se e imagem
 	if(req.body.message.photo != undefined){
+		chat_id = req.body.message.chat.id
 
 		//Coleta dados da imagem
 		photos = req.body.message.photo
 		index = (photos.length ==4)? 3:photos.length-1
 		photo = photos[index]
 
+		//Adiciona imagem na lista de resposta
+		responseControl.file_queue.push({chat_id:chat_id,image_id:photo.file_id})
+
 		//Responde usuario
-		data = [{key:"text=",value: messages.received_image.replace("{name}", req.body.message.from.first_name)},{key:"chat_id=",value:req.body.message.chat.id}]
+		data = [{key:"text=",value: messages.received_image.replace("{name}", req.body.message.from.first_name)},{key:"chat_id=",value:chat_id}]
 		telegramAPI.consumeAPI(servicesAPI.sendMessage,data,interface.show);
 
 		//Faz download da imagem
@@ -56,9 +60,21 @@ app.all('/rest', function (req, res) {
 						.replace("{id_image}",result.image_id)
 
 				exec(cmd, function(error, stdout, stderr) {
-  					// command output is in stdout
-  					console.log(stderr)
-  					console.log(stdout)
+  					if(error == null){
+  						//responseControl.responseImages(config.processed_path,telegramAPI.uploadImage);
+  						//responseControl.sendImage(chat_id,config.processed_path+result.image_id+".png",telegramAPI.uploadImage);
+  						data_file = {path_img:config.processed_path+result.image_id+".png",chat_id:chat_id}
+  						telegramAPI.uploadImage(data_file,function(result){
+  							//console.log(chat_id)
+  							console.log(result)
+  						});
+  					}
+  					else{
+  						console.log("ERRO AO PROCESSAR IMAGEM");
+  						console.log(stderr)
+  					}
+  					//console.log(stderr)
+  					//console.log(stdout)
 				});
 			});	
 		});
